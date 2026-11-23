@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-23
+
 ### Fixed
 
 - Version 1.0.0 was published without its git tag nor its GitHub Release:
@@ -41,5 +43,6 @@ the notes of the version's GitHub Release.
   Configuration screen.
 - English, French, German and Spanish texts and user documentation.
 
-[Unreleased]: https://github.com/gboulvin/gladys-SENEC/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/gboulvin/gladys-SENEC/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/gboulvin/gladys-SENEC/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/gboulvin/gladys-SENEC/releases/tag/v1.0.0

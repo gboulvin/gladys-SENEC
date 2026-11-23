@@ -1,6 +1,6 @@
 {
   "name": "gladys-senec",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Gladys Assistant integration for SENEC.Home batteries and SENEC.Wallbox, read and controlled locally through lala.cgi.",
   "repository": {

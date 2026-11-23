@@ -8,8 +8,8 @@
     "de": "SENEC.Home-Speicher und Wallboxen im lokalen Netz: Überwachung und Steuerung.",
     "es": "Baterías y wallbox SENEC.Home en su red local: supervisión y control."
   },
-  "version": "1.0.0",
-  "docker_image": "ghcr.io/gboulvin/gladys-senec:1.0.0",
+  "version": "1.0.1",
+  "docker_image": "ghcr.io/gboulvin/gladys-senec:1.0.1",
   "gladys_version": ">=5.3.0",
   "cover_image": "https://raw.githubusercontent.com/gboulvin/gladys-senec/main/cover.png",
   "categories": ["energy"],
