@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-23
+
 ### Added
 
 - First release of the SENEC.Home integration: SENEC.Home V2.1 and V3 hybrid
@@ -33,3 +35,6 @@ the notes of the version's GitHub Release.
 - Local / unreachable transport badge, and connection status in the
   Configuration screen.
 - English, French, German and Spanish texts and user documentation.
+
+[Unreleased]: https://github.com/gboulvin/gladys-SENEC/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gboulvin/gladys-SENEC/releases/tag/v1.0.0
