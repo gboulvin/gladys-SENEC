@@ -10,6 +10,11 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Fixed
+
+- Version 1.0.0 was published without its git tag nor its GitHub Release:
+  this version ships the same integration, released in full.
+
 ## [1.0.0] - 2026-11-23
 
 ### Added
