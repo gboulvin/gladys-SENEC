@@ -1,0 +1,1016 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "SENEC.Home",
+  "description": {
+    "en": "SENEC.Home batteries and wallboxes on your local network: monitoring and control.",
+    "fr": "Batteries et wallbox SENEC.Home sur votre réseau local : suivi et pilotage.",
+    "de": "SENEC.Home-Speicher und Wallboxen im lokalen Netz: Überwachung und Steuerung.",
+    "es": "Baterías y wallbox SENEC.Home en su red local: supervisión y control."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-senec:0.0.0",
+  "gladys_version": ">=5.3.0",
+  "cover_image": "https://raw.githubusercontent.com/gboulvin/gladys-senec/main/cover.png",
+  "categories": ["energy"],
+  "keywords": [
+    "SENEC",
+    "SENEC.Home",
+    "SENEC.Wallbox",
+    "V3 hybrid",
+    "battery",
+    "batterie",
+    "Stromspeicher",
+    "batería",
+    "wallbox",
+    "solar"
+  ],
+  "transports": ["local"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Before you start",
+        "fr": "Avant de commencer",
+        "de": "Bevor Sie beginnen",
+        "es": "Antes de empezar"
+      },
+      "description": {
+        "en": "The integration reads and controls your SENEC.Home V2.1 or V3 on the local network, through the same local API as its web interface (lala.cgi), without any cloud account. Give the system a fixed IP address in your router, then enter that address below. SENEC.Home 4 / P4 systems have no local API and are not supported.",
+        "fr": "L'intégration lit et pilote votre SENEC.Home V2.1 ou V3 sur le réseau local, via la même API locale que son interface web (lala.cgi), sans aucun compte cloud. Donnez au système une adresse IP fixe dans votre box, puis saisissez cette adresse ci-dessous. Les systèmes SENEC.Home 4 / P4 n'ont pas d'API locale et ne sont pas pris en charge.",
+        "de": "Die Integration liest und steuert Ihr SENEC.Home V2.1 oder V3 im lokalen Netz, über dieselbe lokale Schnittstelle wie seine Weboberfläche (lala.cgi), ganz ohne Cloud-Konto. Vergeben Sie dem System in Ihrem Router eine feste IP-Adresse und tragen Sie diese unten ein. SENEC.Home 4 / P4 haben keine lokale Schnittstelle und werden nicht unterstützt.",
+        "es": "La integración lee y controla su SENEC.Home V2.1 o V3 en la red local, mediante la misma API local que su interfaz web (lala.cgi), sin ninguna cuenta en la nube. Asigne al sistema una dirección IP fija en su router e introdúzcala a continuación. Los sistemas SENEC.Home 4 / P4 no tienen API local y no son compatibles."
+      },
+      "links": [
+        {
+          "url": "https://github.com/gboulvin/gladys-senec/blob/main/docs/en.md",
+          "label": {
+            "en": "Step-by-step guide",
+            "fr": "Guide pas à pas",
+            "de": "Schritt-für-Schritt-Anleitung",
+            "es": "Guía paso a paso"
+          }
+        }
+      ]
+    },
+    {
+      "key": "hosts",
+      "type": "string",
+      "label": {
+        "en": "SENEC.Home address",
+        "fr": "Adresse du SENEC.Home",
+        "de": "Adresse des SENEC.Home",
+        "es": "Dirección del SENEC.Home"
+      },
+      "description": {
+        "en": "IP address of your SENEC.Home (several systems: separate them with commas).",
+        "fr": "Adresse IP de votre SENEC.Home (plusieurs systèmes : séparez-les par des virgules).",
+        "de": "IP-Adresse Ihres SENEC.Home (mehrere Systeme: durch Kommas trennen).",
+        "es": "Dirección IP de su SENEC.Home (varios sistemas: sepárelas con comas)."
+      },
+      "placeholder": {
+        "en": "e.g. 192.168.1.40",
+        "fr": "ex. 192.168.1.40",
+        "de": "z. B. 192.168.1.40",
+        "es": "p. ej. 192.168.1.40"
+      },
+      "required": true
+    },
+    {
+      "key": "protocol",
+      "type": "select",
+      "label": {
+        "en": "Protocol",
+        "fr": "Protocole",
+        "de": "Protokoll",
+        "es": "Protocolo"
+      },
+      "description": {
+        "en": "HTTPS for the current firmware; HTTP only for an old firmware that does not answer in HTTPS.",
+        "fr": "HTTPS pour les firmwares actuels ; HTTP seulement pour un ancien firmware qui ne répond pas en HTTPS.",
+        "de": "HTTPS für aktuelle Firmware; HTTP nur für eine alte Firmware, die nicht per HTTPS antwortet.",
+        "es": "HTTPS para el firmware actual; HTTP solo para un firmware antiguo que no responde por HTTPS."
+      },
+      "required": false,
+      "default": "https",
+      "options": [
+        {
+          "value": "https",
+          "label": {
+            "en": "HTTPS (recommended)",
+            "fr": "HTTPS (recommandé)",
+            "de": "HTTPS (empfohlen)",
+            "es": "HTTPS (recomendado)"
+          }
+        },
+        {
+          "value": "http",
+          "label": {
+            "en": "HTTP (old firmware)",
+            "fr": "HTTP (ancien firmware)",
+            "de": "HTTP (alte Firmware)",
+            "es": "HTTP (firmware antiguo)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "poll_frequency",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval (s)",
+        "fr": "Intervalle de rafraîchissement (s)",
+        "de": "Aktualisierungsintervall (s)",
+        "es": "Intervalo de actualización (s)"
+      },
+      "description": {
+        "en": "How often the system is read, in seconds.",
+        "fr": "Fréquence de lecture du système, en secondes.",
+        "de": "Wie oft das System gelesen wird, in Sekunden.",
+        "es": "Frecuencia de lectura del sistema, en segundos."
+      },
+      "required": false,
+      "default": 30,
+      "min": 10,
+      "max": 3600
+    },
+    {
+      "key": "surplus_threshold",
+      "type": "number",
+      "label": {
+        "en": "Solar surplus threshold (W)",
+        "fr": "Seuil de surplus solaire (W)",
+        "de": "Schwelle Solarüberschuss (W)",
+        "es": "Umbral de excedente solar (W)"
+      },
+      "description": {
+        "en": "Power fed into the grid above which the \"Solar surplus started\" scene trigger fires.",
+        "fr": "Puissance injectée dans le réseau au-delà de laquelle le déclencheur « Début de surplus solaire » se déclenche.",
+        "de": "Eingespeiste Leistung, ab der der Szenen-Auslöser „Solarüberschuss beginnt“ auslöst.",
+        "es": "Potencia inyectada a la red a partir de la cual se activa el disparador «Comienza el excedente solar»."
+      },
+      "required": false,
+      "default": 500,
+      "min": 1,
+      "max": 100000
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Contact every configured SENEC.Home and list the ones that answer.",
+        "fr": "Contacte chaque SENEC.Home configuré et liste ceux qui répondent.",
+        "de": "Kontaktiert jedes konfigurierte SENEC.Home und listet die antwortenden auf.",
+        "es": "Contacta con cada SENEC.Home configurado y enumera los que responden."
+      },
+      "timeout_seconds": 60
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "battery_full",
+      "label": {
+        "en": "SENEC battery full",
+        "fr": "Batterie SENEC pleine",
+        "de": "SENEC-Akku voll",
+        "es": "Batería SENEC llena"
+      },
+      "description": {
+        "en": "The battery of a SENEC.Home reaches 100 %.",
+        "fr": "La batterie d'un SENEC.Home atteint 100 %.",
+        "de": "Der Akku eines SENEC.Home erreicht 100 %.",
+        "es": "La batería de un SENEC.Home alcanza el 100 %."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "battery_level",
+          "type": "number",
+          "label": {
+            "en": "Battery level (%)",
+            "fr": "Niveau de batterie (%)",
+            "de": "Akkustand (%)",
+            "es": "Nivel de batería (%)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "battery_empty",
+      "label": {
+        "en": "SENEC battery empty",
+        "fr": "Batterie SENEC vide",
+        "de": "SENEC-Akku leer",
+        "es": "Batería SENEC vacía"
+      },
+      "description": {
+        "en": "The battery of a SENEC.Home runs out.",
+        "fr": "La batterie d'un SENEC.Home est vide.",
+        "de": "Der Akku eines SENEC.Home ist leer.",
+        "es": "La batería de un SENEC.Home se agota."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "battery_level",
+          "type": "number",
+          "label": {
+            "en": "Battery level (%)",
+            "fr": "Niveau de batterie (%)",
+            "de": "Akkustand (%)",
+            "es": "Nivel de batería (%)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "operating_mode_changed",
+      "label": {
+        "en": "SENEC operating mode changed",
+        "fr": "Changement de mode du SENEC",
+        "de": "SENEC-Betriebsmodus geändert",
+        "es": "Cambio de modo del SENEC"
+      },
+      "description": {
+        "en": "A SENEC.Home changes mode: charging, discharging, full, safety charge, error, unreachable...",
+        "fr": "Un SENEC.Home change de mode : charge, décharge, pleine, charge de sécurité, erreur, injoignable...",
+        "de": "Ein SENEC.Home wechselt den Modus: Laden, Entladen, voll, Sicherheitsladung, Fehler, nicht erreichbar...",
+        "es": "Un SENEC.Home cambia de modo: carga, descarga, llena, carga de seguridad, error, inaccesible..."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          }
+        },
+        {
+          "key": "mode",
+          "type": "multi_select",
+          "label": {
+            "en": "New mode",
+            "fr": "Nouveau mode",
+            "de": "Neuer Modus",
+            "es": "Nuevo modo"
+          },
+          "options": [
+            {
+              "value": "charging",
+              "label": {
+                "en": "Charging",
+                "fr": "En charge",
+                "de": "Laden",
+                "es": "Cargando"
+              }
+            },
+            {
+              "value": "discharging",
+              "label": {
+                "en": "Discharging",
+                "fr": "En décharge",
+                "de": "Entladen",
+                "es": "Descargando"
+              }
+            },
+            {
+              "value": "full",
+              "label": {
+                "en": "Battery full",
+                "fr": "Batterie pleine",
+                "de": "Akku voll",
+                "es": "Batería llena"
+              }
+            },
+            {
+              "value": "empty",
+              "label": {
+                "en": "Battery empty",
+                "fr": "Batterie vide",
+                "de": "Akku leer",
+                "es": "Batería vacía"
+              }
+            },
+            {
+              "value": "idle",
+              "label": {
+                "en": "Standby",
+                "fr": "En veille",
+                "de": "Bereitschaft",
+                "es": "En espera"
+              }
+            },
+            {
+              "value": "safety_charge",
+              "label": {
+                "en": "Safety charge",
+                "fr": "Charge de sécurité",
+                "de": "Sicherheitsladung",
+                "es": "Carga de seguridad"
+              }
+            },
+            {
+              "value": "maintenance",
+              "label": {
+                "en": "Maintenance",
+                "fr": "Maintenance",
+                "de": "Wartung",
+                "es": "Mantenimiento"
+              }
+            },
+            {
+              "value": "error",
+              "label": {
+                "en": "Error",
+                "fr": "Erreur",
+                "de": "Fehler",
+                "es": "Error"
+              }
+            },
+            {
+              "value": "other",
+              "label": {
+                "en": "Other",
+                "fr": "Autre",
+                "de": "Sonstiges",
+                "es": "Otro"
+              }
+            },
+            {
+              "value": "unreachable",
+              "label": {
+                "en": "Unreachable",
+                "fr": "Injoignable",
+                "de": "Nicht erreichbar",
+                "es": "Inaccesible"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "New mode",
+            "fr": "Nouveau mode",
+            "de": "Neuer Modus",
+            "es": "Nuevo modo"
+          }
+        },
+        {
+          "key": "previous_mode",
+          "type": "string",
+          "label": {
+            "en": "Previous mode",
+            "fr": "Mode précédent",
+            "de": "Vorheriger Modus",
+            "es": "Modo anterior"
+          }
+        },
+        {
+          "key": "state_name",
+          "type": "string",
+          "label": {
+            "en": "SENEC state",
+            "fr": "État SENEC",
+            "de": "SENEC-Zustand",
+            "es": "Estado SENEC"
+          }
+        }
+      ]
+    },
+    {
+      "key": "surplus_started",
+      "label": {
+        "en": "Solar surplus started",
+        "fr": "Début de surplus solaire",
+        "de": "Solarüberschuss beginnt",
+        "es": "Comienza el excedente solar"
+      },
+      "description": {
+        "en": "The power fed into the grid rises above the configured threshold.",
+        "fr": "La puissance injectée dans le réseau dépasse le seuil configuré.",
+        "de": "Die eingespeiste Leistung übersteigt die konfigurierte Schwelle.",
+        "es": "La potencia inyectada a la red supera el umbral configurado."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "export_power",
+          "type": "number",
+          "label": {
+            "en": "Power fed into the grid (W)",
+            "fr": "Puissance injectée (W)",
+            "de": "Eingespeiste Leistung (W)",
+            "es": "Potencia inyectada (W)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "surplus_stopped",
+      "label": {
+        "en": "Solar surplus stopped",
+        "fr": "Fin de surplus solaire",
+        "de": "Solarüberschuss endet",
+        "es": "Termina el excedente solar"
+      },
+      "description": {
+        "en": "The power fed into the grid falls below half the threshold.",
+        "fr": "La puissance injectée dans le réseau retombe sous la moitié du seuil.",
+        "de": "Die eingespeiste Leistung fällt unter die halbe Schwelle.",
+        "es": "La potencia inyectada a la red cae por debajo de la mitad del umbral."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "export_power",
+          "type": "number",
+          "label": {
+            "en": "Power fed into the grid (W)",
+            "fr": "Puissance injectée (W)",
+            "de": "Eingespeiste Leistung (W)",
+            "es": "Potencia inyectada (W)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "ev_plugged",
+      "label": {
+        "en": "Vehicle plugged into a SENEC.Wallbox",
+        "fr": "Véhicule branché sur une SENEC.Wallbox",
+        "de": "Fahrzeug an SENEC.Wallbox angesteckt",
+        "es": "Vehículo conectado a un SENEC.Wallbox"
+      },
+      "description": {
+        "en": "A vehicle is plugged into a SENEC.Wallbox.",
+        "fr": "Un véhicule est branché sur une SENEC.Wallbox.",
+        "de": "Ein Fahrzeug wird an eine SENEC.Wallbox angesteckt.",
+        "es": "Se conecta un vehículo a un SENEC.Wallbox."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Wallbox",
+            "fr": "SENEC.Wallbox",
+            "de": "SENEC.Wallbox",
+            "es": "SENEC.Wallbox"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        }
+      ]
+    },
+    {
+      "key": "ev_unplugged",
+      "label": {
+        "en": "Vehicle unplugged from a SENEC.Wallbox",
+        "fr": "Véhicule débranché d'une SENEC.Wallbox",
+        "de": "Fahrzeug von SENEC.Wallbox abgesteckt",
+        "es": "Vehículo desconectado de un SENEC.Wallbox"
+      },
+      "description": {
+        "en": "A vehicle is unplugged from a SENEC.Wallbox.",
+        "fr": "Un véhicule est débranché d'une SENEC.Wallbox.",
+        "de": "Ein Fahrzeug wird von einer SENEC.Wallbox abgesteckt.",
+        "es": "Se desconecta un vehículo de un SENEC.Wallbox."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Wallbox",
+            "fr": "SENEC.Wallbox",
+            "de": "SENEC.Wallbox",
+            "es": "SENEC.Wallbox"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l'appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "read_system",
+      "label": {
+        "en": "Read a SENEC.Home",
+        "fr": "Lire un SENEC.Home",
+        "de": "SENEC.Home auslesen",
+        "es": "Leer un SENEC.Home"
+      },
+      "description": {
+        "en": "Read the battery, solar, house and grid values now.",
+        "fr": "Lit maintenant la batterie, le solaire, la maison et le réseau.",
+        "de": "Liest jetzt Akku, Solar, Haus und Netz aus.",
+        "es": "Lee ahora la batería, la energía solar, la casa y la red."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "reachable",
+          "type": "boolean",
+          "label": {
+            "en": "Reachable",
+            "fr": "Joignable",
+            "de": "Erreichbar",
+            "es": "Accesible"
+          }
+        },
+        {
+          "key": "operating_mode",
+          "type": "string",
+          "label": {
+            "en": "Operating mode",
+            "fr": "Mode de fonctionnement",
+            "de": "Betriebsmodus",
+            "es": "Modo de funcionamiento"
+          }
+        },
+        {
+          "key": "state_name",
+          "type": "string",
+          "label": {
+            "en": "SENEC state",
+            "fr": "État SENEC",
+            "de": "SENEC-Zustand",
+            "es": "Estado SENEC"
+          }
+        },
+        {
+          "key": "battery_level",
+          "type": "number",
+          "label": {
+            "en": "Battery level (%)",
+            "fr": "Niveau de batterie (%)",
+            "de": "Akkustand (%)",
+            "es": "Nivel de batería (%)"
+          }
+        },
+        {
+          "key": "solar_power",
+          "type": "number",
+          "label": {
+            "en": "Solar production (W)",
+            "fr": "Production solaire (W)",
+            "de": "Solarerzeugung (W)",
+            "es": "Producción solar (W)"
+          }
+        },
+        {
+          "key": "house_power",
+          "type": "number",
+          "label": {
+            "en": "House consumption (W)",
+            "fr": "Consommation maison (W)",
+            "de": "Hausverbrauch (W)",
+            "es": "Consumo de la casa (W)"
+          }
+        },
+        {
+          "key": "grid_import_power",
+          "type": "number",
+          "label": {
+            "en": "Power drawn from the grid (W)",
+            "fr": "Puissance soutirée (W)",
+            "de": "Netzbezug (W)",
+            "es": "Potencia consumida de la red (W)"
+          }
+        },
+        {
+          "key": "grid_export_power",
+          "type": "number",
+          "label": {
+            "en": "Power fed into the grid (W)",
+            "fr": "Puissance injectée (W)",
+            "de": "Eingespeiste Leistung (W)",
+            "es": "Potencia inyectada (W)"
+          }
+        },
+        {
+          "key": "battery_charge_power",
+          "type": "number",
+          "label": {
+            "en": "Battery charge power (W)",
+            "fr": "Puissance de charge batterie (W)",
+            "de": "Akku-Ladeleistung (W)",
+            "es": "Potencia de carga de la batería (W)"
+          }
+        },
+        {
+          "key": "battery_discharge_power",
+          "type": "number",
+          "label": {
+            "en": "Battery discharge power (W)",
+            "fr": "Puissance de décharge batterie (W)",
+            "de": "Akku-Entladeleistung (W)",
+            "es": "Potencia de descarga de la batería (W)"
+          }
+        },
+        {
+          "key": "safe_charge",
+          "type": "boolean",
+          "label": {
+            "en": "Safety charge running",
+            "fr": "Charge de sécurité en cours",
+            "de": "Sicherheitsladung läuft",
+            "es": "Carga de seguridad en curso"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_safe_charge",
+      "label": {
+        "en": "SENEC safety charge",
+        "fr": "Charge de sécurité SENEC",
+        "de": "SENEC-Sicherheitsladung",
+        "es": "Carga de seguridad SENEC"
+      },
+      "description": {
+        "en": "Start or stop charging the battery from the grid up to 100 %.",
+        "fr": "Lance ou arrête la charge de la batterie depuis le réseau jusqu'à 100 %.",
+        "de": "Startet oder beendet das Laden des Akkus aus dem Netz bis 100 %.",
+        "es": "Inicia o detiene la carga de la batería desde la red hasta el 100 %."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          },
+          "required": true
+        },
+        {
+          "key": "state",
+          "type": "select",
+          "label": {
+            "en": "Action",
+            "fr": "Action",
+            "de": "Aktion",
+            "es": "Acción"
+          },
+          "required": true,
+          "default": "start",
+          "options": [
+            {
+              "value": "start",
+              "label": {
+                "en": "Start",
+                "fr": "Lancer",
+                "de": "Starten",
+                "es": "Iniciar"
+              }
+            },
+            {
+              "value": "stop",
+              "label": {
+                "en": "Stop",
+                "fr": "Arrêter",
+                "de": "Beenden",
+                "es": "Detener"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "applied",
+          "type": "boolean",
+          "label": {
+            "en": "Order applied",
+            "fr": "Ordre appliqué",
+            "de": "Befehl ausgeführt",
+            "es": "Orden aplicada"
+          }
+        },
+        {
+          "key": "safe_charge",
+          "type": "boolean",
+          "label": {
+            "en": "Safety charge running",
+            "fr": "Charge de sécurité en cours",
+            "de": "Sicherheitsladung läuft",
+            "es": "Carga de seguridad en curso"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_wallbox_mode",
+      "label": {
+        "en": "SENEC.Wallbox charging mode",
+        "fr": "Mode de charge SENEC.Wallbox",
+        "de": "SENEC.Wallbox-Lademodus",
+        "es": "Modo de carga SENEC.Wallbox"
+      },
+      "description": {
+        "en": "Lock a SENEC.Wallbox, or charge fast or with the solar surplus.",
+        "fr": "Verrouille une SENEC.Wallbox, ou charge en rapide ou sur le surplus solaire.",
+        "de": "Sperrt eine SENEC.Wallbox oder lädt schnell bzw. mit Solarüberschuss.",
+        "es": "Bloquea un SENEC.Wallbox, o carga rápido o con el excedente solar."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Wallbox",
+            "fr": "SENEC.Wallbox",
+            "de": "SENEC.Wallbox",
+            "es": "SENEC.Wallbox"
+          },
+          "required": true
+        },
+        {
+          "key": "mode",
+          "type": "select",
+          "label": {
+            "en": "Charging mode",
+            "fr": "Mode de charge",
+            "de": "Lademodus",
+            "es": "Modo de carga"
+          },
+          "required": true,
+          "default": "optimized",
+          "options": [
+            {
+              "value": "fast",
+              "label": {
+                "en": "Fast",
+                "fr": "Rapide",
+                "de": "Schnell",
+                "es": "Rápido"
+              }
+            },
+            {
+              "value": "optimized",
+              "label": {
+                "en": "Solar optimized",
+                "fr": "Optimisé solaire",
+                "de": "Solar-optimiert",
+                "es": "Optimizado solar"
+              }
+            },
+            {
+              "value": "locked",
+              "label": {
+                "en": "Locked",
+                "fr": "Verrouillé",
+                "de": "Gesperrt",
+                "es": "Bloqueado"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "applied",
+          "type": "boolean",
+          "label": {
+            "en": "Order applied",
+            "fr": "Ordre appliqué",
+            "de": "Befehl ausgeführt",
+            "es": "Orden aplicada"
+          }
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "Charging mode",
+            "fr": "Mode de charge",
+            "de": "Lademodus",
+            "es": "Modo de carga"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "senec_overview",
+      "label": {
+        "en": "SENEC.Home",
+        "fr": "SENEC.Home",
+        "de": "SENEC.Home",
+        "es": "SENEC.Home"
+      },
+      "description": {
+        "en": "Energy flows, battery, operating mode and safety charge of a SENEC.Home.",
+        "fr": "Flux d'énergie, batterie, mode et charge de sécurité d'un SENEC.Home.",
+        "de": "Energieflüsse, Akku, Betriebsmodus und Sicherheitsladung eines SENEC.Home.",
+        "es": "Flujos de energía, batería, modo y carga de seguridad de un SENEC.Home."
+      },
+      "icon": "battery-charging",
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Home",
+            "fr": "SENEC.Home",
+            "de": "SENEC.Home",
+            "es": "SENEC.Home"
+          },
+          "required": false
+        }
+      ],
+      "action_timeout_seconds": 30
+    },
+    {
+      "key": "senec_wallbox",
+      "label": {
+        "en": "SENEC.Wallbox",
+        "fr": "SENEC.Wallbox",
+        "de": "SENEC.Wallbox",
+        "es": "SENEC.Wallbox"
+      },
+      "description": {
+        "en": "Charging power, vehicle and charging mode of a SENEC.Wallbox.",
+        "fr": "Puissance de charge, véhicule et mode de charge d'une SENEC.Wallbox.",
+        "de": "Ladeleistung, Fahrzeug und Lademodus einer SENEC.Wallbox.",
+        "es": "Potencia de carga, vehículo y modo de carga de un SENEC.Wallbox."
+      },
+      "icon": "zap",
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "SENEC.Wallbox",
+            "fr": "SENEC.Wallbox",
+            "de": "SENEC.Wallbox",
+            "es": "SENEC.Wallbox"
+          },
+          "required": true
+        }
+      ],
+      "action_timeout_seconds": 30
+    }
+  ]
+}
